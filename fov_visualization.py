@@ -261,6 +261,52 @@ def plot_fovs_hemisphere(sensor_directions, fovs_deg, density_icosphere=30):
     plt.show()
 
 
+def plot_fovs_2d(sensor_directions, fovs_deg, density_icosphere=50):
+    # Generate points on the unit sphere
+    nu = density_icosphere  # or any other integer
+    vertices, faces = icosphere(nu)
+    x = vertices[:, 0]
+    y = vertices[:, 1]
+    z = vertices[:, 2]
+    points = np.vstack((x, y, z)).T
+
+    # Convert points to azimuth and elevation
+    azimuth = np.arctan2(y, x)
+    elevation = np.arcsin(z)
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+    
+    colors = ['r', 'g', 'b', 'c', 'm', 'y']
+
+    N = len(sensor_directions)
+
+    for i in range(N):
+        sensor_direction = sensor_directions[i]
+        fov_deg = fovs_deg[i]
+        fov_rad = np.radians(fov_deg)
+
+        # Calculate angles between the sensor direction and points on the sphere
+        angles = np.arccos(np.dot(points, sensor_direction) / np.linalg.norm(sensor_direction))
+        
+        # Mask points within the FOV
+        mask = angles < fov_rad 
+        azimuth_fov = azimuth[mask]
+        elevation_fov = elevation[mask]
+
+        # Plot FOV on 2D plot
+        ax.scatter(np.rad2deg(azimuth_fov), np.rad2deg(elevation_fov), color=colors[i], alpha=0.3, s=5, label=f'Sensor {i+1}')
+
+        # Plot the sensor direction
+        sensor_azimuth = np.rad2deg(np.arctan2(sensor_direction[1], sensor_direction[0]))
+        sensor_elevation = np.rad2deg(np.arcsin(sensor_direction[2]))
+        ax.plot(sensor_azimuth, sensor_elevation, 'o', color=colors[i])
+
+    # Labels and show plot
+    ax.set_xlabel('Azimuth (deg)')
+    ax.set_ylabel('Elevation (deg)')
+    ax.legend()
+    plt.show()
+
 
 
 def set_axes_equal(ax):

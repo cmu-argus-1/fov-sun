@@ -107,10 +107,11 @@ if __name__ == "__main__":
 
     pyramid = Pyramid(azimuths, elevation)
 
-    from fov_visualization import plot_fovs, plot_fovs_hemisphere
+    from fov_visualization import *
     sensor_directions = [pyramid.n0, pyramid.n1, pyramid.n2, pyramid.n3]
     fovs_deg = 4 * [75]
     plot_fovs_hemisphere(sensor_directions, fovs_deg)
+    plot_fovs_2d(sensor_directions, fovs_deg)
 
     """lux = [1000,1000,0,0]
 
