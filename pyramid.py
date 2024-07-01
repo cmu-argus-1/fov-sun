@@ -17,25 +17,11 @@ class Pyramid:
 
         self.azimuths = azimuths
         self.elevation = elevation
-
-        self.n0 = np.array([np.sin(self.azimuths[0])*np.cos(self.elevation), 
-                            np.cos(self.azimuths[0])*np.cos(self.elevation), 
-                            np.sin(self.elevation)])
-        
-
-        self.n1 = np.array([np.sin(self.azimuths[1])*np.cos(self.elevation), 
-                            np.cos(self.azimuths[1])*np.cos(self.elevation), 
-                            np.sin(self.elevation)])
-
-        self.n2 = np.array([np.sin(self.azimuths[2])*np.cos(self.elevation), 
-                            np.cos(self.azimuths[2])*np.cos(self.elevation), 
-                            np.sin(self.elevation)])
-                            
-        self.n3 = np.array([np.sin(self.azimuths[3])*np.cos(self.elevation), 
-                            np.cos(self.azimuths[3])*np.cos(self.elevation), 
-                            np.sin(self.elevation)])
-        
-        self.B = np.array([self.n0, self.n1, self.n2, self.n3])
+        N = len(azimuths)
+        self.B = []
+        for i in range(N):
+            self.B.append(np.array([np.sin(azimuths[i])*np.cos(elevation), np.cos(azimuths[i])*np.cos(elevation), np.sin(elevation)]))
+        self.B = np.array(self.B)
 
         self.sun_position = np.array([0, 0, 1])
 
@@ -101,17 +87,18 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
 
-    azimuths = [0.0, np.deg2rad(90), np.deg2rad(180), np.deg2rad(270)]
-    elevation = np.deg2rad(45)
+    #azimuths = [0.0, np.deg2rad(90), np.deg2rad(180), np.deg2rad(270)]
+    azimuths = [0.0, np.deg2rad(120), np.deg2rad(240)]
+    elevation = np.deg2rad(45) # angle of light sensors from the face
 
 
     pyramid = Pyramid(azimuths, elevation)
 
     from fov_visualization import *
-    sensor_directions = [pyramid.n0, pyramid.n1, pyramid.n2, pyramid.n3]
-    fovs_deg = 4 * [75]
+    sensor_directions = [pyramid.B[i] for i in range(len(pyramid.B))]
+    fovs_deg = pyramid.B.shape[0] * [80]
     plot_fovs_hemisphere(sensor_directions, fovs_deg)
-    plot_fovs_2d(sensor_directions, fovs_deg)
+    plot_fovs_2d(sensor_directions, fovs_deg, hemisphere=False)
 
     """lux = [1000,1000,0,0]
 
