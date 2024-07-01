@@ -87,8 +87,8 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
 
-    #azimuths = [0.0, np.deg2rad(90), np.deg2rad(180), np.deg2rad(270)]
-    azimuths = [0.0, np.deg2rad(120), np.deg2rad(240)]
+    azimuths = [0.0, np.deg2rad(90), np.deg2rad(180), np.deg2rad(270)]
+    #azimuths = [0.0, np.deg2rad(120), np.deg2rad(240)]
     elevation = np.deg2rad(45) # angle of light sensors from the face
 
 
@@ -99,6 +99,10 @@ if __name__ == "__main__":
     fovs_deg = pyramid.B.shape[0] * [80]
     plot_fovs_hemisphere(sensor_directions, fovs_deg)
     plot_fovs_2d(sensor_directions, fovs_deg, hemisphere=False)
+    plot_fovs_sensor_coverage(sensor_directions, fovs_deg, hemisphere=True)
+    plot_fovs_sensor_coverage_2d(sensor_directions, fovs_deg, hemisphere=True)
+
+
 
     """lux = [1000,1000,0,0]
 

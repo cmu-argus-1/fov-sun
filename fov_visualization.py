@@ -316,7 +316,114 @@ def plot_fovs_2d(sensor_directions, fovs_deg, density_icosphere=50, hemisphere=F
     ax.legend()
     plt.show()
 
+def plot_fovs_sensor_coverage(sensor_directions, fovs_deg, density_icosphere=50, hemisphere=False):
+    # Generate points on the unit sphere
+    nu = density_icosphere  # or any other integer
+    vertices, faces = icosphere(nu)
+    x = vertices[:, 0]
+    y = vertices[:, 1]
+    z = vertices[:, 2]
+    points = np.vstack((x, y, z)).T
 
+    # Initialize coverage count array
+    coverage_count = np.zeros(len(points), dtype=int)
+
+    N = len(sensor_directions)
+
+    for i in range(N):
+        sensor_direction = sensor_directions[i]
+        fov_deg = fovs_deg[i]
+        fov_rad = np.radians(fov_deg)
+
+        # Calculate angles between the sensor direction and points on the sphere
+        angles = np.arccos(np.dot(points, sensor_direction) / np.linalg.norm(sensor_direction))
+        
+        # Mask points within the FOV
+        mask = angles < fov_rad 
+        coverage_count[mask] += 1
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection='3d')
+
+    max_coverage = np.max(coverage_count)
+    colors = plt.cm.viridis(np.linspace(0, 1, max_coverage))
+
+    for i in range(1, max_coverage + 1):
+        mask = coverage_count == i
+        x_fov = points[mask, 0]
+        y_fov = points[mask, 1]
+        z_fov = points[mask, 2]
+
+        if hemisphere:
+            mask_negative_z = z_fov > 0
+            x_fov = x_fov[mask_negative_z]
+            y_fov = y_fov[mask_negative_z]
+            z_fov = z_fov[mask_negative_z]
+
+        # Plot FOV on the unit sphere
+        ax.scatter(x_fov, y_fov, z_fov, color=colors[i-1], alpha=0.3, s=5, label=f'Covered by {i} sensor(s)')
+
+    # Labels and show plot
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.legend()
+    plt.show()
+
+
+
+def plot_fovs_sensor_coverage_2d(sensor_directions, fovs_deg, density_icosphere=50, hemisphere=False):
+    # Generate points on the unit sphere
+    nu = density_icosphere  # or any other integer
+    vertices, faces = icosphere(nu)
+    x = vertices[:, 0]
+    y = vertices[:, 1]
+    z = vertices[:, 2]
+    points = np.vstack((x, y, z)).T
+
+    # Convert points to azimuth and elevation
+    azimuth = np.arctan2(y, x)
+    elevation = np.arcsin(z)
+
+    # Initialize coverage count array
+    coverage_count = np.zeros(len(points), dtype=int)
+
+    N = len(sensor_directions)
+
+    for i in range(N):
+        sensor_direction = sensor_directions[i]
+        fov_deg = fovs_deg[i]
+        fov_rad = np.radians(fov_deg)
+
+        # Calculate angles between the sensor direction and points on the sphere
+        angles = np.arccos(np.dot(points, sensor_direction) / np.linalg.norm(sensor_direction))
+        
+        # Mask points within the FOV
+        mask = angles < fov_rad 
+        coverage_count[mask] += 1
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+    
+    max_coverage = np.max(coverage_count)
+    colors = plt.cm.viridis(np.linspace(0, 1, max_coverage))
+
+    for i in range(1, max_coverage + 1):
+        mask = coverage_count == i
+        azimuth_fov = azimuth[mask]
+        elevation_fov = elevation[mask]
+
+        if hemisphere:
+            mask_negative_elevation = elevation_fov > 0
+            azimuth_fov = azimuth_fov[mask_negative_elevation]
+            elevation_fov = elevation_fov[mask_negative_elevation]
+
+        ax.scatter(np.rad2deg(azimuth_fov), np.rad2deg(elevation_fov), color=colors[i-1], alpha=0.3, s=5, label=f'Covered by {i} sensor(s)')
+
+    # Labels and show plot
+    ax.set_xlabel('Azimuth (deg)')
+    ax.set_ylabel('Elevation (deg)')
+    ax.legend()
+    plt.show()
 
 def set_axes_equal(ax):
     """
