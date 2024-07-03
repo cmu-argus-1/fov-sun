@@ -2,7 +2,9 @@
 ```bash
 pip install icosphere
 ```
-
+```bash
+python pyramid.py
+```
 
 List of some useful resources 
 - https://deepblue.lib.umich.edu/bitstream/handle/2027.42/140626/1.61468.pdf;jsessionid=5A9692E102EEA1A0AB9BD05AC7ED415D?sequence=1

@@ -361,7 +361,7 @@ def plot_fovs_sensor_coverage(sensor_directions, fovs_deg, density_icosphere=50,
             z_fov = z_fov[mask_negative_z]
 
         # Plot FOV on the unit sphere
-        ax.scatter(x_fov, y_fov, z_fov, color=colors[i-1], alpha=0.3, s=5, label=f'Covered by {i} sensor(s)')
+        ax.scatter(x_fov, y_fov, z_fov, color=colors[i-1], alpha=0.7, s=10, label=f'Covered by {i} sensor(s)')
 
     # Labels and show plot
     ax.set_xlabel('X')
@@ -417,7 +417,7 @@ def plot_fovs_sensor_coverage_2d(sensor_directions, fovs_deg, density_icosphere=
             azimuth_fov = azimuth_fov[mask_negative_elevation]
             elevation_fov = elevation_fov[mask_negative_elevation]
 
-        ax.scatter(np.rad2deg(azimuth_fov), np.rad2deg(elevation_fov), color=colors[i-1], alpha=0.3, s=5, label=f'Covered by {i} sensor(s)')
+        ax.scatter(np.rad2deg(azimuth_fov), np.rad2deg(elevation_fov), color=colors[i-1], alpha=0.7, s=10, label=f'Covered by {i} sensor(s)')
 
     # Labels and show plot
     ax.set_xlabel('Azimuth (deg)')
